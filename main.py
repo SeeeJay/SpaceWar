@@ -45,9 +45,11 @@ space_bg = pygame.image.load('space1.png')
 def window(red, white, red_laser, white_laser, red_health, white_health):
   screen.blit(space_bg, (0, 0))
   pygame.draw.rect(screen, Blue, boundary)
-
+  
+  #setting up the string for the ships health and their positioning in the screen.
   red_health_txt = health_font.render("Red Health: " + str(red_health), 2, Red)
   white_health_txt = health_font.render("White Health: " + str(white_health), 2, White)
+  
   screen.blit(red_health_txt, (width - red_health_txt.get_width() - 85, 2))
   screen.blit(white_health_txt, (70, 2))
 
@@ -62,7 +64,7 @@ def window(red, white, red_laser, white_laser, red_health, white_health):
 
   pygame.display.update()
 
-# creating a function for the white ship to move
+# creating a function for the white ship to move using the keys AWSD for the movement
 def white_ctrls(pressed_keys, white):
   if pressed_keys[pygame.K_a] and white.x - vel > 0:  # LEFT
     white.x -= vel
@@ -74,7 +76,7 @@ def white_ctrls(pressed_keys, white):
     white.y += vel
 
 
-# creating a function for the red ship to move
+# creating a function for the red ship to move using the ARROWS for the movement
 def red_ctrls(pressed_keys, red):
   if pressed_keys[pygame.K_LEFT] and red.x - vel > boundary.x + boundary.width:  # LEFT
     red.x -= vel
@@ -85,7 +87,7 @@ def red_ctrls(pressed_keys, red):
   if pressed_keys[pygame.K_DOWN] and red.y + vel + red.height < height - 15:  # DOWN
     red.y += vel
 
-#creating a function so that when either laser hit the ship, the laser will be deleted as it shows the ship was hit. 
+#creating a function so that when either laser hit the ship, the laser will be deleted as it would show the ship was hit. 
 def lasers(white_laser, red_laser, white, red):
   for laser in white_laser:
       laser.x += laser_vel
@@ -110,7 +112,7 @@ def winner(text):
   pygame.display.update()
   pygame.time.delay(5000)
 
-
+#creating the last function to call on the other functions and variables.
 def main():
   red = pygame.Rect(655, 230, ship_width, ship_height)
   white = pygame.Rect(100, 230, ship_width, ship_height)
@@ -118,11 +120,11 @@ def main():
   red_laser = []
   white_laser = []
 
-  #variable for the ship's health
+  #variables for the ship's health
   red_health = 15
   white_health = 15
 
-  #a while loop to make the window stay open until the user manually closes the program and without it, the progpram can't run.
+  #a while loop to make the window stay open until the user manually closes the program and without it, the progpram will constantly keep on closing.
   clock = pygame.time.Clock()
   run = True
   while run:
@@ -132,7 +134,7 @@ def main():
         run = False
         pygame.quit()
 
-      #if the user presses the space button, the white ship will fire and if the number of laser fired is less than the maxiumum ammo, the ship will reload.
+      #if the user presses the space button, the white ship will fire and if the number of laser fired is less than the maxiumum ammo, the ship will reload. The moment either ship hits each other, a quick reload will happen.
       if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE and len(white_laser) < max_laser:
           laser = pygame.Rect(white.x + white.width, white.y + white.height//2 - 2, 10, 5)
@@ -143,12 +145,14 @@ def main():
           laser = pygame.Rect(red.x, red.y + red.height//2 - 2, 10, 5)
           red_laser.append(laser)
 
+      #an if statement for the health to go down by 1 everytime either ships get hit.
       if event.type == red_hit:
         red_health -= 1
 
       if event.type == white_hit:
         white_health -= 1
 
+    #an if statement to call the winner of the game if one of the ship's health reaches 0.
     winner_text = ""
     if red_health <= 0:
       winner_text = "White Wins!"
